@@ -12,85 +12,85 @@
             $this->shillings = (int) $fetch[1];
             $this->pennies = (int) $fetch[2];
         }
-        public function sum($priceA, $priceB) {
-            $sumD = $priceA->pennies + $priceB->pennies;
+        public function sum(OldEnglishPound $priceB) {
+            $sumD = $this->pennies + $priceB->pennies;
             $restD = 0;
             while( $sumD >= 12){
                 $sumD -= 12;
                 $restD += 1;
             }
-            $sumS = $priceA->shillings + $priceB->shillings + $restD;
+            $sumS = $this->shillings + $priceB->shillings + $restD;
             $restS = 0;
             while($sumS >= 20){
                 $sumS -= 20;
                 $restS += 1;
             }
-            $sumP = $priceA->pounds + $priceB->pounds + $restS;
+            $sumP = $this->pounds + $priceB->pounds + $restS;
             $sum = $sumP."p ".$sumS."s ".$sumD."d";
             return $sum;   
         }
-        public function dif($priceA, $priceB) {
+        public function dif(OldEnglishPound $priceB) {
             $loanD = 0;
-            if ($priceB->pennies > $priceA->pennies) {
-                if($priceA->shillings >= 1){
-                    $difD = $priceA->pennies + 12 - $priceB->pennies;
+            if ($priceB->pennies > $this->pennies) {
+                if($this->shillings >= 1){
+                    $difD = $this->pennies + 12 - $priceB->pennies;
                     $loanD += 1;
                 }else{
                     return 0;
                 }        
             } else {
-                $difD = $priceA->pennies - $priceB->pennies;
+                $difD = $this->pennies - $priceB->pennies;
             }
             $loanS = 0;
-            if ($priceB->shillings > ($priceA->shillings - $loanD)) {
-                if ($priceA->pounds >= 1){
-                    $difS = $priceA->shillings - $loanD + 20 - $priceB->shillings;
+            if ($priceB->shillings > ($this->shillings - $loanD)) {
+                if ($this->pounds >= 1){
+                    $difS = $this->shillings - $loanD + 20 - $priceB->shillings;
                     $loanS +=1;
                 }else{
                     return 0;
                 }
             } else {
-                $difS = $priceA->shillings - $loanD - $priceB->shillings;
+                $difS = $this->shillings - $loanD - $priceB->shillings;
             }
-            if ($priceB->pounds > $priceA->pounds - $loanS){
+            if ($priceB->pounds > $this->pounds - $loanS){
                 return 0;
             }else{
-                $difP = $priceA->pounds - $priceB->pounds - $loanS;
+                $difP = $this->pounds - $priceB->pounds - $loanS;
             }
             $dif = $difP."p ".$difS."s ".$difD."d";
             return $dif;
         }
-        public function mol($priceA, $int) {
-            $molD = $priceA->pennies * $int;
+        public function mol($int) {
+            $molD = $this->pennies * $int;
             $restD = 0;
             while( $molD >= 12){
                 $molD -= 12;
                 $restD += 1;
             }
-            $molS = ($priceA->shillings * $int) + $restD;
+            $molS = ($this->shillings * $int) + $restD;
             $restS = 0;
             while( $molS >= 20){
                 $molS -= 20;
                 $restS += 1;
             }
-            $molP = ($priceA->pounds * $int) + $restS;
+            $molP = ($this->pounds * $int) + $restS;
             $mol = $molP."p ".$molS."s ".$molD."d";
             return $mol;
         }
-        public function div($priceA, $int) {
-            $restP = $priceA->pounds;
+        public function div($int) {
+            $restP = $this->pounds;
             $divP = 0;
             while ($restP >= $int){
                 $restP -= $int;
                 $divP += 1;
             }
-            $restS = $priceA->shillings + ($restP * 20);
+            $restS = $this->shillings + ($restP * 20);
             $divS = 0;
             while ($restS >= $int){
                 $restS -= $int;
                 $divS += 1;
             }
-            $restD = $priceA->pennies + ($restS * 12);
+            $restD = $this->pennies + ($restS * 12);
             $divD = 0;
             while( $restD >= $int){
                 $restD -= $int;
@@ -113,14 +113,17 @@
             $div = $divP."p ".$divS."s ".$divD."d"." (".($rest).")";
             return $div;
         }
+        
     }
 
     $a = new OldEnglishPound("5p 17s 8d");
     $b = new OldEnglishPound("3p 4s 10d");
     $c = new OldEnglishPound("18p 16s 1d");
-    echo "Sum: ". $a->sum($a, $b)."<br>";
-    echo "Dif: ". $a->dif($b, $a)."<br>";
-    echo "Mol: ". $a->mol($a, 2)."<br>";
-    echo "Div: ". $a->div($a, 3)."<br>";
-    echo "Div: ". $a->div($c, 15)."<br>";
+    echo "Sum: ". $a->sum($b)."\n\n";
+    echo "Dif: ". $a->dif($b)."\n\n";
+    echo "Mol: ". $a->mol(2)."\n\n";
+    echo "Div: ". $a->div(3)."\n\n";
+    echo "Div: ". $a->div(15)."\n\n"; //controlla la divisione!!!
+    echo "🌳". $a->sum($b)->mol(2)->div(3); //?? non funzionaaaaaa
+    
 ?>
